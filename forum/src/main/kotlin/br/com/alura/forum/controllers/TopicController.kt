@@ -2,6 +2,7 @@ package br.com.alura.forum.controllers
 import br.com.alura.forum.dtos.CreateTopicDto
 import br.com.alura.forum.dtos.ResponseTopicDto
 import br.com.alura.forum.services.TopicService
+import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -33,6 +34,7 @@ class TopicController(
     }
 
     @PostMapping
+    @Transactional
     fun create(
         @RequestBody @Valid request: CreateTopicDto,
        uriBuilder: UriComponentsBuilder
@@ -44,6 +46,7 @@ class TopicController(
     }
 
     @PutMapping
+    @Transactional
     fun update(@RequestBody @Valid request: UpdateTopicDto) : ResponseEntity<ResponseTopicDto>{
         val topicUpdated = service.updateTopic(request)
 
@@ -52,6 +55,7 @@ class TopicController(
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Transactional
     fun delete(@PathVariable id:Long) {
         service.deleteTopic(id)
     }
