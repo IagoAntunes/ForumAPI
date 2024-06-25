@@ -7,6 +7,8 @@ import br.com.alura.forum.services.CourseService
 import br.com.alura.forum.services.TopicService
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -33,6 +35,7 @@ class TopicController(
     private  val courseService: CourseService
 ){
     @GetMapping
+    @Cacheable("getAllTopics")
     fun getAll(
         @RequestParam(required = false) nameCourse: String?,
         @PageableDefault(size = 5,sort = ["dateCreated"], direction = Sort.Direction.DESC) pagination: Pageable
@@ -47,6 +50,7 @@ class TopicController(
 
     @PostMapping
     @Transactional
+    @CacheEvict(value = ["getAllTopics"], allEntries = true)
     fun create(
         @RequestBody @Valid request: CreateTopicDto,
        uriBuilder: UriComponentsBuilder
@@ -59,6 +63,7 @@ class TopicController(
 
     @PutMapping
     @Transactional
+    @CacheEvict(value = ["getAllTopics"], allEntries = true)
     fun update(@RequestBody @Valid request: UpdateTopicDto) : ResponseEntity<ResponseTopicDto>{
         val topicUpdated = service.updateTopic(request)
 
@@ -68,6 +73,7 @@ class TopicController(
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
+    @CacheEvict(value = ["getAllTopics"], allEntries = true)
     fun delete(@PathVariable id:Long) {
         service.deleteTopic(id)
     }
