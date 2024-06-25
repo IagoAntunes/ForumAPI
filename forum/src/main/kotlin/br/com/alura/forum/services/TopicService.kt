@@ -1,5 +1,5 @@
 package br.com.alura.forum.services
-import br.com.alura.forum.controllers.UpdateTopicDto
+import br.com.alura.forum.dtos.UpdateTopicDto
 import br.com.alura.forum.dtos.CreateTopicDto
 import br.com.alura.forum.dtos.ResponseTopicDto
 import br.com.alura.forum.exceptions.NotFoundException
@@ -7,6 +7,8 @@ import br.com.alura.forum.mapper.CreateTopicMapper
 import br.com.alura.forum.mapper.ResponseTopicMapper
 import br.com.alura.forum.models.Topic
 import br.com.alura.forum.repositories.ITopicRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 
@@ -17,11 +19,19 @@ class TopicService(
     private  val topicMapper: ResponseTopicMapper,
     private  val createTopicMapper: CreateTopicMapper
 ) {
-    fun list(): List<ResponseTopicDto>{
-        return topicRepository.findAll().stream().map {
+    fun getAll(
+       nameCourse:String?,
+       pagination: Pageable
+    ): Page<ResponseTopicDto> {
+        val topics = if(nameCourse == null){
+            topicRepository.findAll(pagination)
+        } else {
+            topicRepository.findByCourseName(nameCourse,pagination)
+        }
+        return topics.map {
             t ->
             topicMapper.map(t)
-        }.collect(Collectors.toList())
+        }
     }
 
     fun getTopicById(id: Long): ResponseTopicDto {
