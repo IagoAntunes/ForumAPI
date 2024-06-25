@@ -2,22 +2,23 @@ package br.com.alura.forum.services
 import br.com.alura.forum.dtos.UpdateTopicDto
 import br.com.alura.forum.dtos.CreateTopicDto
 import br.com.alura.forum.dtos.ResponseTopicDto
+import br.com.alura.forum.dtos.TopicByCategoryDto
 import br.com.alura.forum.exceptions.NotFoundException
 import br.com.alura.forum.mapper.CreateTopicMapper
 import br.com.alura.forum.mapper.ResponseTopicMapper
 import br.com.alura.forum.models.Topic
 import br.com.alura.forum.repositories.ITopicRepository
+import jakarta.persistence.EntityManager
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import java.util.stream.Collectors
-
 
 @Service
 class TopicService(
     private  var topicRepository : ITopicRepository,
     private  val topicMapper: ResponseTopicMapper,
-    private  val createTopicMapper: CreateTopicMapper
+    private  val createTopicMapper: CreateTopicMapper,
+    private val em: EntityManager,
 ) {
     fun getAll(
        nameCourse:String?,
@@ -56,5 +57,9 @@ class TopicService(
 
     fun deleteTopic(id: Long) {
         topicRepository.deleteById(id)
+    }
+
+    fun report() : List<TopicByCategoryDto> {
+        return topicRepository.report()
     }
 }
