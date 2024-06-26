@@ -1,8 +1,8 @@
 create table topic (
-    id bigint not null auto_increment,
+    id BIGSERIAL not null,
     title varchar(50) not null,
     message varchar(50) not null,
-    date_created datetime not null,
+    date_created timestamp not null,
     status varchar(20) not null,
     course_id bigint not null,
     author_id bigint not null,
