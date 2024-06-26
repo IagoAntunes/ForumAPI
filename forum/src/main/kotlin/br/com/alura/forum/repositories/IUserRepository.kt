@@ -4,4 +4,5 @@ import br.com.alura.forum.models.Usuario
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface IUserRepository  : JpaRepository<Usuario,Long>{
+    fun findByEmail(username: String?): Usuario?
 }
